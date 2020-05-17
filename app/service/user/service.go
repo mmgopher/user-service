@@ -5,6 +5,7 @@ import (
 	"github.com/mmgopher/user-service/app/dao"
 	"github.com/mmgopher/user-service/app/httperrors"
 	"github.com/mmgopher/user-service/app/model"
+	"github.com/mmgopher/user-service/app/service/user/validator"
 )
 
 // Provider provides and interface to work with User service
@@ -13,6 +14,10 @@ type Provider interface {
 	GetUser(userID int) (*model.User, error)
 	// DeleteUser deletes user from databse
 	DeleteUser(userID int) error
+	// CreateUser creates new user
+	CreateUser(request *request.CreateUser) (int, error)
+	// UpdateUser updates existing user
+	UpdateUser(userID int, request *request.UpdateUser) error
 }
 
 // Service represents User service
@@ -59,6 +64,21 @@ func (s Service) DeleteUser(userID int) error {
 
 // CreateUser creates new user
 func (s Service) CreateUser(request *request.CreateUser) (int, error) {
+
+	if err := validator.ValidateCreateUserRequest(request); err != nil {
+		return 0, err
+	}
+
+	exist, err := s.userRepository.CheckIfExistWithNameAndSurname(request.Name, request.Surname)
+
+	if err != nil {
+		return 0, httperrors.InternalServerError.WithCause(err)
+	}
+
+	if exist {
+		return 0, httperrors.UserAlreadyRegistered
+	}
+
 	userID, err := s.userRepository.Create(&model.User{
 		Name:    request.Name,
 		Surname: request.Surname,
@@ -72,4 +92,31 @@ func (s Service) CreateUser(request *request.CreateUser) (int, error) {
 	}
 
 	return userID, nil
+}
+
+// UpdateUser updates existing user
+func (s Service) UpdateUser(userID int, request *request.UpdateUser) error {
+
+	if err := validator.ValidateUpdateUserRequest(request); err != nil {
+		return err
+	}
+
+	updated, err := s.userRepository.Update(&model.User{
+		ID:      userID,
+		Name:    request.Name,
+		Surname: request.Surname,
+		Gender:  request.Gender,
+		Age:     request.Age,
+		Address: request.Address,
+	})
+
+	if err != nil {
+		return httperrors.InternalServerError.WithCause(err)
+	}
+
+	if !updated {
+		return httperrors.EntityNotFoundError("user")
+	}
+
+	return nil
 }

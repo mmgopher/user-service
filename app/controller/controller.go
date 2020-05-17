@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/mmgopher/user-service/app/api/request"
 	"github.com/mmgopher/user-service/app/api/response"
 	"github.com/mmgopher/user-service/app/httperrors"
 	"github.com/mmgopher/user-service/app/middleware"
@@ -44,8 +45,47 @@ func (c Controller) GetUser(context *gin.Context) {
 
 // DeleteUser handles DELETE /v1/users/:user_id endpoint
 func (c Controller) DeleteUser(context *gin.Context) {
-	err := c.userService.DeleteUser(context.GetInt(middleware.UserIDParamKey))
+	if err := c.userService.DeleteUser(context.GetInt(middleware.UserIDParamKey)); err != nil {
+		httperrors.Emit(context, err)
+		return
+	}
+	context.JSON(http.StatusOK, gin.H{})
+}
+
+// CreateUser handles POST /v1/users endpoint
+func (c Controller) CreateUser(context *gin.Context) {
+
+	var req request.CreateUser
+	if err := context.ShouldBindJSON(&req); err != nil {
+		httperrors.Emit(context, httperrors.RequestBodyParsingError.WithCause(err))
+		return
+	}
+
+	userID, err := c.userService.CreateUser(&req)
+
 	if err != nil {
+		httperrors.Emit(context, err)
+		return
+	}
+
+	context.JSON(http.StatusCreated, response.CreateUser{
+		ID: userID,
+	})
+}
+
+// UpdateUser handles PUT /v1/users/:user_id endpoint
+func (c Controller) UpdateUser(context *gin.Context) {
+
+	var req request.UpdateUser
+	if err := context.ShouldBindJSON(&req); err != nil {
+		httperrors.Emit(context, httperrors.RequestBodyParsingError.WithCause(err))
+		return
+	}
+
+	if err := c.userService.UpdateUser(
+		context.GetInt(middleware.UserIDParamKey),
+		&req,
+	); err != nil {
 		httperrors.Emit(context, err)
 		return
 	}

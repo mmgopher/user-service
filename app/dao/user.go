@@ -19,6 +19,9 @@ type UserRepositoryProvider interface {
 	Update(user *model.User) (bool, error)
 	// Delete deletes user record
 	Delete(userID int) (bool, error)
+	// CheckIfExistWithNameAndSurname checks if user with provided name and surname exists in DB
+	// Returns TRUE if user already exist
+	CheckIfExistWithNameAndSurname(name, surname string) (bool, error)
 }
 
 // UserRepository represents object to work with  database User entity
@@ -31,6 +34,22 @@ func NewUserRepository(db *sqlx.DB) *UserRepository {
 	return &UserRepository{
 		db: db,
 	}
+}
+
+// CheckIfExistWithNameAndSurname checks if user with provided name and surname exists in DB
+// Returns TRUE if user already exist
+func (r UserRepository) CheckIfExistWithNameAndSurname(name, surname string) (bool, error) {
+	var total int
+	if err := r.db.Get(&total, `
+		SELECT count(*)
+		FROM user_sch.user
+		WHERE name = $1
+		AND surname = $2`, name, surname,
+	); err != nil {
+		return false, errors.Wrap(err, "impossible to get count of users")
+	}
+
+	return total > 0, nil
 }
 
 // GetByID returns User object by ID

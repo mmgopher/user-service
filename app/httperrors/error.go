@@ -30,3 +30,36 @@ var (
 		)
 	}
 )
+
+// Application error for `POST /userss` and `PUT /users/:user_id
+var (
+	UserNameEmpty = NewBadRequest(
+		2040001, "`name` can't be empty",
+	)
+
+	UserSurnameEmpty = NewBadRequest(
+		2040002, "`surnname` can't be empty",
+	)
+
+	UserAgeIncorrect = NewBadRequest(
+		2040003, "`age` should be `>0` and `<120`",
+	)
+
+	UserGenderEmpty = NewBadRequest(
+		2040004, "`gender` can't be empty",
+	)
+
+	UserGenderNotSupported = func(gender string) *HTTPError {
+		return NewBadRequest(2040005, fmt.Sprintf(
+			"`gender` %s is not supported", gender),
+		)
+	}
+
+	UserAddressEmpty = NewBadRequest(
+		2040006, "`address` can't be empty",
+	)
+
+	UserAlreadyRegistered = NewBadRequest(
+		2040007, "user with provided name and surname already exists",
+	)
+)

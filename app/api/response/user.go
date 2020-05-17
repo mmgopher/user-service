@@ -2,7 +2,7 @@ package response
 
 import "time"
 
-// User stores response for /users/user_id endpoint
+// User stores response for GET /v1/users/:user_id endpoint
 type User struct {
 	ID        int       `json:"id"`
 	Name      string    `json:"name"`
@@ -11,4 +11,9 @@ type User struct {
 	Age       int       `json:"age"`
 	Address   string    `json:"address"`
 	CreatedAt time.Time `json:"created_at"`
+}
+
+// CreateUser stores response for POST /users endpoint
+type CreateUser struct {
+	ID int `json:"id"`
 }

@@ -27,6 +27,8 @@ func NewRouter(config *config.Config, controller *controller.Controller) *gin.En
 	v1 := g.Group(RootPath)
 	{
 		v1.GET(GetUserRoute, middleware.ValidateUserID, controller.GetUser)
+		v1.POST(CreateUserRoute, controller.CreateUser)
+		v1.PUT(UpdateUserRoute, middleware.ValidateUserID, controller.UpdateUser)
 		v1.DELETE(DeleteUserRoute, middleware.ValidateUserID, controller.DeleteUser)
 	}
 	return g
