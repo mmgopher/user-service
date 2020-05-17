@@ -1,10 +1,53 @@
 package controller
 
+import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/mmgopher/user-service/app/api/response"
+	"github.com/mmgopher/user-service/app/httperrors"
+	"github.com/mmgopher/user-service/app/middleware"
+	"github.com/mmgopher/user-service/app/service/user"
+)
+
 // Controller represents Controller layer of application.
 type Controller struct {
+	userService user.Provider
 }
 
 // New creates new instance of Controller.
-func New() *Controller {
-	return &Controller{}
+func New(
+	userService user.Provider,
+) *Controller {
+	return &Controller{
+		userService: userService,
+	}
+}
+
+// GetUser handles GET /v1/users/:user_id endpoint
+func (c Controller) GetUser(context *gin.Context) {
+	u, err := c.userService.GetUser(context.GetInt(middleware.UserIDParamKey))
+	if err != nil {
+		httperrors.Emit(context, err)
+		return
+	}
+	context.JSON(http.StatusOK, response.User{
+		ID:        u.ID,
+		Name:      u.Name,
+		Surname:   u.Surname,
+		Gender:    u.Gender,
+		Age:       u.Age,
+		Address:   u.Address,
+		CreatedAt: u.CreatedAt,
+	})
+}
+
+// DeleteUser handles DELETE /v1/users/:user_id endpoint
+func (c Controller) DeleteUser(context *gin.Context) {
+	err := c.userService.DeleteUser(context.GetInt(middleware.UserIDParamKey))
+	if err != nil {
+		httperrors.Emit(context, err)
+		return
+	}
+	context.JSON(http.StatusOK, gin.H{})
 }

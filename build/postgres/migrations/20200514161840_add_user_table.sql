@@ -6,7 +6,8 @@ CREATE TABLE "user_sch"."user" (
      surname text NOT NULL,
      gender text,
      age integer,
-     address text
+     address text,
+     created_at timestamp with time zone DEFAULT now()
 )
 -- +goose StatementEnd
 

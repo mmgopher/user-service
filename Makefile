@@ -1,6 +1,7 @@
 .DEFAULT_GOAL := build
 
 .PHONY: build clean go_test_unit goose_up postgres_up
+.PHONY: docker_build_image
 
 ## Project variables
 
@@ -18,6 +19,8 @@ build:
 clean:
 	rm -rf ./bin
 
+
+# Docker targets.
 docker_build_image:
 	@echo ">>> Building docker image with service binary."
 	docker build \
@@ -37,6 +40,12 @@ postgres_up:
 	-d \
 	user-service-postgres 
 
+application_start: postgres_up
+	@echo ">>> Sleeping 10 seconds until postgres start."
+	@sleep 10
+	@echo ">>> Starting application."
+	@docker-compose $(DOCKER_COMPOSE_OPTIONS) up -d $(SERVICE)
+
 goose_up:
 	@docker-compose $(DOCKER_COMPOSE_OPTIONS) run \
             --rm \
@@ -44,11 +53,28 @@ goose_up:
 			-w /app \
             goose-migrate
 
-
+# Go targets.
 go_get:
 	@echo '>>> Getting go modules.'
-	@env GOPROXY=$(GOPROXY) GOPRIVATE=$(GOPRIVATE) go mod download
+	@env GOPROXY=$(GOPROXY) go mod download
 	
 go_test_unit:
 	@echo ">>> Running unit tests."
-	@env GIN_MODE=release GOPROXY=$(GOPROXY) go test -v -tags unit -cover ./... -coverprofile=coverunit.out
+	@env GOPROXY=$(GOPROXY) go test -v -tags unit -cover ./... -coverprofile=coverunit.out
+
+go_test_integration:
+	@echo ">>> Running integrartion tests."
+	@env GOPROXY=$(GOPROXY) go test -v -tags="integration" ./test/integration/...
+
+
+run_test_integration:
+	@echo ">>> Running tests"
+	@docker-compose $(DOCKER_COMPOSE_OPTIONS) run \
+    		--rm \
+    		-v $$PWD:/go/src/$(GO_IMPORT_PATH) \
+    		-w /go/src/$(GO_IMPORT_PATH) \
+    		--no-deps \
+    		-e GO111MODULE=$(GO111MODULE) \
+    		integration-tests
+
+application_test: docker_down application_start goose_up  run_test_integration 	docker_down		
