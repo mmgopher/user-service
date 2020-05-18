@@ -1,11 +1,14 @@
 package validator
 
 import (
+	"regexp"
 	"strings"
 
 	"github.com/mmgopher/user-service/app/api/request"
 	"github.com/mmgopher/user-service/app/httperrors"
 )
+
+var sortRegex = regexp.MustCompile("^[a-zA-Z_]*:(asc|desc)$")
 
 var supportedGenderList = map[string]struct{}{
 	"male":           {},
@@ -114,6 +117,28 @@ func ValidateUpdateUserRequest(request *request.UpdateUser) error {
 
 	if err := validateAddress(request.Gender); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+// ValidateFindUsersRequest validates GET /v1/users endpoint.
+func ValidateFindUsersRequest(request request.FindUsers) error {
+
+	if request.AfterID > 0 && request.BeforeID > 0 {
+		return httperrors.PaginationAfterIDAndBeforeIDDeclared
+	} else if request.AfterID < 0 {
+		return httperrors.PaginationAfterIDNegative
+	} else if request.BeforeID < 0 {
+		return httperrors.PaginationBeforeIDNegative
+	}
+
+	if request.Limit < 0 {
+		return httperrors.PaginationLimitNegative
+	}
+
+	if len(request.Sort) > 0 && !sortRegex.MatchString(request.Sort) {
+		return httperrors.PaginationSortIncorrectFormat
 	}
 
 	return nil

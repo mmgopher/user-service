@@ -13,10 +13,11 @@ const RootPath = "/v1"
 
 // supported route creators.
 const (
-	GetUserRoute    = "/users/:user_id"
-	UpdateUserRoute = "/users/:user_id"
-	DeleteUserRoute = "/users/:user_id"
-	CreateUserRoute = "/users"
+	GetUserRoute     = "/users/:user_id"
+	UpdateUserRoute  = "/users/:user_id"
+	DeleteUserRoute  = "/users/:user_id"
+	CreateUserRoute  = "/users"
+	GetUserListRoute = "/users"
 )
 
 // NewRouter initializes the gin router and routes.
@@ -30,6 +31,7 @@ func NewRouter(config *config.Config, controller *controller.Controller) *gin.En
 		v1.POST(CreateUserRoute, controller.CreateUser)
 		v1.PUT(UpdateUserRoute, middleware.ValidateUserID, controller.UpdateUser)
 		v1.DELETE(DeleteUserRoute, middleware.ValidateUserID, controller.DeleteUser)
+		v1.GET(GetUserListRoute, controller.GetUserList)
 	}
 	return g
 }

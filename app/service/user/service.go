@@ -18,6 +18,8 @@ type Provider interface {
 	CreateUser(request *request.CreateUser) (int, error)
 	// UpdateUser updates existing user
 	UpdateUser(userID int, request *request.UpdateUser) error
+	// FindUsers  searches users in DB using FindUsers criteria.
+	FindUsers(request request.FindUsers) ([]model.User, int, int, error)
 }
 
 // Service represents User service
@@ -101,6 +103,16 @@ func (s Service) UpdateUser(userID int, request *request.UpdateUser) error {
 		return err
 	}
 
+	user, err := s.userRepository.GetByNameAndSurname(request.Name, request.Surname)
+
+	if err != nil {
+		return httperrors.InternalServerError.WithCause(err)
+	}
+
+	if user != nil && userID != user.ID {
+		return httperrors.UserAlreadyRegistered
+	}
+
 	updated, err := s.userRepository.Update(&model.User{
 		ID:      userID,
 		Name:    request.Name,
@@ -119,4 +131,20 @@ func (s Service) UpdateUser(userID int, request *request.UpdateUser) error {
 	}
 
 	return nil
+}
+
+// FindUsers  searches users in DB using FindUsers criteria.
+func (s Service) FindUsers(request request.FindUsers) (
+	[]model.User, int, int, error) {
+
+	if err := validator.ValidateFindUsersRequest(request); err != nil {
+		return nil, 0, 0, err
+	}
+
+	searchBuilder := dao.NewUserSearchBuilder(request)
+	result, beforeID, afterID, err := s.userRepository.FindUsers(searchBuilder)
+	if err != nil {
+		return nil, 0, 0, httperrors.InternalServerError.WithCause(err)
+	}
+	return result, beforeID, afterID, nil
 }

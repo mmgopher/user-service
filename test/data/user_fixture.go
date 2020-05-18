@@ -22,7 +22,7 @@ var (
 
 	// UpdateUserRequest is a request for PUT /v1/users/:user_id endpoint.
 	UpdateUserRequest = request.CreateUser{
-		Name:    "Sony",
+		Name:    "Sonny",
 		Surname: "Gordon",
 		Gender:  "male",
 		Age:     30,

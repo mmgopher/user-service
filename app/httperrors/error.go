@@ -31,7 +31,7 @@ var (
 	}
 )
 
-// Application error for `POST /userss` and `PUT /users/:user_id
+// Application errors for `POST /v1/users` and `PUT /v1/users/:user_id
 var (
 	UserNameEmpty = NewBadRequest(
 		2040001, "`name` can't be empty",
@@ -61,5 +61,28 @@ var (
 
 	UserAlreadyRegistered = NewBadRequest(
 		2040007, "user with provided name and surname already exists",
+	)
+)
+
+// Application errors for GET /v1/users endpoint
+var (
+	PaginationAfterIDNegative = NewBadRequest(
+		2140001, "afterID can not be negative",
+	)
+
+	PaginationBeforeIDNegative = NewBadRequest(
+		2140002, "beforeID can not be negative",
+	)
+
+	PaginationAfterIDAndBeforeIDDeclared = NewBadRequest(
+		2140003, "afterID and beforeID can not both been declared",
+	)
+
+	PaginationLimitNegative = NewBadRequest(
+		2140004, "limit can not be negative",
+	)
+
+	PaginationSortIncorrectFormat = NewBadRequest(
+		2140005, "sort parameters does not match sort pattern",
 	)
 )

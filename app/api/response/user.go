@@ -17,3 +17,15 @@ type User struct {
 type CreateUser struct {
 	ID int `json:"id"`
 }
+
+// UserListWithPagination represents json response for GET /users route.
+type UserListWithPagination struct {
+	Result     []User     `json:"result"`
+	Pagination Pagination `json:"pagination"`
+}
+
+// Pagination represents pagination data
+type Pagination struct {
+	PrevLink string `json:"prev_link"`
+	NextLink string `json:"next_link"`
+}

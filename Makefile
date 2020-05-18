@@ -2,7 +2,7 @@
 
 .PHONY: build clean go_test_unit goose_up postgres_up
 .PHONY: docker_build_image
-.PHONY: application_start application_test
+.PHONY: application_start application_test run_test_integration
 
 ## Project variables
 

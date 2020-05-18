@@ -17,3 +17,17 @@ type UpdateUser struct {
 	Age     int    `json:"age"`
 	Address string `json:"address"`
 }
+
+// FindUsers represents query params for searching users
+type FindUsers struct {
+	Limit    int    `form:"limit"`
+	BeforeID int    `form:"before_id"`
+	AfterID  int    `form:"after_id"`
+	Sort     string `form:"sort"`
+	Name     string `form:"name"`
+	Surname  string `form:"surname"`
+	Gender   string `form:"gender"`
+	Address  string `form:"address"`
+	MinAge   int    `form:"min_age"`
+	MaxAge   int    `form:"max_age"`
+}

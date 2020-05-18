@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+
 	"github.com/mmgopher/user-service/app/api/request"
 	"github.com/mmgopher/user-service/app/api/response"
 	"github.com/mmgopher/user-service/app/httperrors"
@@ -90,4 +91,44 @@ func (c Controller) UpdateUser(context *gin.Context) {
 		return
 	}
 	context.JSON(http.StatusOK, gin.H{})
+}
+
+// GetUserList handles GET /v1/users endpoint.
+func (c Controller) GetUserList(context *gin.Context) {
+	var req request.FindUsers
+	if err := context.ShouldBindQuery(&req); err != nil {
+		httperrors.Emit(context, httperrors.QueryParametersParsingError.WithCause(err))
+		return
+	}
+
+	users, beforeID, afterID, err := c.userService.FindUsers(req)
+	if err != nil {
+		httperrors.Emit(context, err)
+		return
+	}
+
+	prevURL, nextURL := getPaginationURLs(context.Request.URL, beforeID, afterID)
+	userListResponse := make([]response.User, 0, len(users))
+
+	for _, u := range users {
+		userListResponse = append(userListResponse, response.User{
+			ID:        u.ID,
+			Name:      u.Name,
+			Surname:   u.Surname,
+			Age:       u.Age,
+			Gender:    u.Gender,
+			Address:   u.Address,
+			CreatedAt: u.CreatedAt,
+		})
+
+	}
+
+	context.JSON(http.StatusOK, response.UserListWithPagination{
+		Result: userListResponse,
+		Pagination: response.Pagination{
+			PrevLink: prevURL,
+			NextLink: nextURL,
+		},
+	})
+
 }
