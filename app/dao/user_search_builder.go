@@ -67,9 +67,11 @@ func NewUserSearchBuilder(request request.FindUsers) *UserSearchBuilder {
 }
 
 // GetFilterCriteria returns "filter" criteria to filter results
-func (usb UserSearchBuilder) GetFilterCriteria() (filterCondition string, args []interface{}) {
+func (usb UserSearchBuilder) GetFilterCriteria() (string, []interface{}) {
 
 	var sb strings.Builder
+	sb.WriteString("1 = ?")
+	args := []interface{}{1}
 
 	if strings.TrimSpace(usb.filter.name) != "" {
 		sb.WriteString(" AND name ilike ?")
@@ -92,16 +94,16 @@ func (usb UserSearchBuilder) GetFilterCriteria() (filterCondition string, args [
 	}
 
 	if usb.filter.minAge > 0 {
-		filterCondition += " AND age >= ?"
+		sb.WriteString(" AND age >= ?")
 		args = append(args, usb.filter.minAge)
 	}
 
 	if usb.filter.maxAge > 0 {
-		filterCondition += " AND age <= ?"
+		sb.WriteString(" AND age <= ?")
 		args = append(args, usb.filter.maxAge)
 	}
 
-	return
+	return sb.String(), args
 }
 
 // BuildSearchQuery builds final query with all criteria
