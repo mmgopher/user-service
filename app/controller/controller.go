@@ -101,7 +101,7 @@ func (c Controller) GetUserList(context *gin.Context) {
 		return
 	}
 
-	users, beforeID, afterID, err := c.userService.FindUsers(req)
+	users, beforeID, afterID, err := c.userService.FindUsers(&req)
 	if err != nil {
 		httperrors.Emit(context, err)
 		return

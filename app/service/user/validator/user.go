@@ -89,7 +89,7 @@ func ValidateCreateUserRequest(request *request.CreateUser) error {
 		return err
 	}
 
-	if err := validateAddress(request.Gender); err != nil {
+	if err := validateAddress(request.Address); err != nil {
 		return err
 	}
 
@@ -115,7 +115,7 @@ func ValidateUpdateUserRequest(request *request.UpdateUser) error {
 		return err
 	}
 
-	if err := validateAddress(request.Gender); err != nil {
+	if err := validateAddress(request.Address); err != nil {
 		return err
 	}
 
@@ -123,7 +123,7 @@ func ValidateUpdateUserRequest(request *request.UpdateUser) error {
 }
 
 // ValidateFindUsersRequest validates GET /v1/users endpoint.
-func ValidateFindUsersRequest(request request.FindUsers) error {
+func ValidateFindUsersRequest(request *request.FindUsers) error {
 
 	if request.AfterID > 0 && request.BeforeID > 0 {
 		return httperrors.PaginationAfterIDAndBeforeIDDeclared

@@ -19,7 +19,7 @@ type Provider interface {
 	// UpdateUser updates existing user
 	UpdateUser(userID int, request *request.UpdateUser) error
 	// FindUsers  searches users in DB using FindUsers criteria.
-	FindUsers(request request.FindUsers) ([]model.User, int, int, error)
+	FindUsers(request *request.FindUsers) ([]model.User, int, int, error)
 }
 
 // Service represents User service
@@ -134,7 +134,7 @@ func (s Service) UpdateUser(userID int, request *request.UpdateUser) error {
 }
 
 // FindUsers  searches users in DB using FindUsers criteria.
-func (s Service) FindUsers(request request.FindUsers) (
+func (s Service) FindUsers(request *request.FindUsers) (
 	[]model.User, int, int, error) {
 
 	if err := validator.ValidateFindUsersRequest(request); err != nil {

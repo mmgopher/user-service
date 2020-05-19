@@ -29,7 +29,7 @@ type userFilter struct {
 }
 
 // NewUserSearchBuilder creates new instance of User Search Builder.
-func NewUserSearchBuilder(request request.FindUsers) *UserSearchBuilder {
+func NewUserSearchBuilder(request *request.FindUsers) *UserSearchBuilder {
 
 	rowsToReturn := request.Limit
 

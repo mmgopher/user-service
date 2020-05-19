@@ -78,4 +78,6 @@ run_test_integration:
     		-e GO111MODULE=$(GO111MODULE) \
     		integration-tests
 
-application_test: docker_down application_start goose_up  run_test_integration 	docker_down		
+application_test: docker_down application_start goose_up  run_test_integration 	docker_down	
+	
+application_run: docker_down application_start goose_up	
