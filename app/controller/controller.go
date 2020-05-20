@@ -127,7 +127,9 @@ func (c Controller) GetUserList(context *gin.Context) {
 		Result: userListResponse,
 		Pagination: response.Pagination{
 			PrevLink: prevURL,
+			BeforeID: beforeID,
 			NextLink: nextURL,
+			AfterID:  afterID,
 		},
 	})
 

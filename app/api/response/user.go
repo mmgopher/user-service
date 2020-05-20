@@ -28,4 +28,6 @@ type UserListWithPagination struct {
 type Pagination struct {
 	PrevLink string `json:"prev_link"`
 	NextLink string `json:"next_link"`
+	BeforeID int    `json:"before_id"`
+	AfterID  int    `json:"after_id"`
 }

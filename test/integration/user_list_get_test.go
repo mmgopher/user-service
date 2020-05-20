@@ -23,7 +23,9 @@ var getUserListData = []struct {
 	firstUserID     int
 	lastUserID      int
 	linkPrev        string
+	beforeID        int
 	linkNext        string
+	afterID         int
 }{
 	{
 		"SortAscByIDPage1FilterName",
@@ -35,7 +37,9 @@ var getUserListData = []struct {
 		4,
 		7,
 		"",
+		0,
 		"/v1/users?after_id=7&limit=4&name=sorttest",
+		7,
 	},
 	{
 		"SortAscByIDPage2FilterName",
@@ -48,7 +52,9 @@ var getUserListData = []struct {
 		8,
 		11,
 		"/v1/users?before_id=8&limit=4&name=sorttest",
+		8,
 		"/v1/users?after_id=11&limit=4&name=sorttest",
+		11,
 	},
 	{
 		"SortAscByIDPage2PrevFilterName",
@@ -61,7 +67,9 @@ var getUserListData = []struct {
 		4,
 		7,
 		"",
+		0,
 		"/v1/users?after_id=7&limit=4&name=sorttest",
+		7,
 	},
 	{
 		"SortDescByIDPage1FilterName",
@@ -74,7 +82,9 @@ var getUserListData = []struct {
 		13,
 		10,
 		"",
+		0,
 		"/v1/users?after_id=10&limit=4&name=sorttest&sort=%3Adesc",
+		10,
 	},
 	{
 		"SortDescByIDPage2FilterName",
@@ -88,7 +98,9 @@ var getUserListData = []struct {
 		9,
 		6,
 		"/v1/users?before_id=9&limit=4&name=sorttest&sort=%3Adesc",
+		9,
 		"/v1/users?after_id=6&limit=4&name=sorttest&sort=%3Adesc",
+		6,
 	},
 	{
 		"SortDescByIDPage2PrevFilterName",
@@ -102,7 +114,9 @@ var getUserListData = []struct {
 		13,
 		10,
 		"",
+		0,
 		"/v1/users?after_id=10&limit=4&name=sorttest&sort=%3Adesc",
+		10,
 	},
 	{
 		"SortAscByNamePage1FilterNameFilterGender",
@@ -116,7 +130,9 @@ var getUserListData = []struct {
 		13,
 		7,
 		"",
+		0,
 		"/v1/users?after_id=7&gender=MaLe&limit=4&name=sorttest&sort=name%3Aasc",
+		7,
 	},
 	{
 		"SortDescByAgePage1FilterNameFilterGender",
@@ -130,7 +146,9 @@ var getUserListData = []struct {
 		12,
 		11,
 		"",
+		0,
 		"",
+		0,
 	},
 	{
 		"SortByIDPage1FilterNameFilterAge",
@@ -145,7 +163,9 @@ var getUserListData = []struct {
 		4,
 		13,
 		"",
+		0,
 		"",
+		0,
 	},
 	{
 		"SortDescByAgePage1FilterNameFilterAge",
@@ -160,7 +180,9 @@ var getUserListData = []struct {
 		13,
 		8,
 		"",
+		0,
 		"",
+		0,
 	},
 	{
 		"SortAscByAgePage1FilterNameFilterAge",
@@ -175,7 +197,9 @@ var getUserListData = []struct {
 		8,
 		6,
 		"",
+		0,
 		"",
+		0,
 	},
 }
 
