@@ -24,7 +24,7 @@ Attributes:
 - `POST /v1/users` - create User entity. Request in JSON format
 - `GET /v1/users` - search Users using sorting, filtering and seek pagination
 
-Exmples"
+Exmples
 - `GET /v1/users` - return up to 30 users sort by `id` ascending
 - `GET /v1/users?limit=100&sort=name:desc` - return up to 100 users sort by `name` descending
 - `GET /v1/users?gender=male&limit=100&sort=age:asc` - return up to 100 users sort by `age` ascending with gender `male`
@@ -52,13 +52,13 @@ To start integration tests please call command:
 
 `make docker_build_image && make application_test`
 
-The command does:
-- build application docker image
-- start postgres DB in docker container
-- start application itself in docker container
-- execute goose migration to preapre DB schema
-- insert test data into postgres
-- execute integration tests in docker container
+The command:
+- builds application docker image
+- starts postgres DB in docker container
+- starts application itself in docker container
+- executes goose migration to preapre DB schema
+- inserts test data into postgres
+- executes integration tests in docker container
 
 ## Run Service Locally
 
@@ -74,7 +74,7 @@ Start you browser and enter url:
 
 In case of errors there will be returned custom error object in JSON format with custom error code and message.
 
-For example in case of validation error there is retruend HTTP code 400 with detailed error code and message
+For example in case of validation error there is returned HTTP code 400 with detailed error code and message
 Examples:
 - {"code":2140004,"message":"`limit` can not be negative"}
 - {"code":2040001,"message":"`name` can't be empty"}
