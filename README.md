@@ -79,3 +79,18 @@ Examples:
 - {"code":2140004,"message":"`limit` can not be negative"}
 - {"code":2040001,"message":"`name` can't be empty"}
 - {"code":2040001,"message":"`afterID` can not be negative"}
+
+## Project structure
+
+- **app**  - aplication code
+    - **api** - definition of response and request objects
+    - **config** - application configuration object
+    - **controller** - controller layer
+    - **dao** - repository layer
+    - **db** - db helpers
+    - **httperrors** - definition of custom http error object and predefined application errors
+    - **middleware** - gin-gonic middleware
+    - **model** - database models
+    - **service** -service layer 
+- **build** - docker and docker-compose files to build, run and test application
+- **test** - integration tests    
