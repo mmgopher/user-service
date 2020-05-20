@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  user-service:
+    image: user-service
+    depends_on:
+      - user-service-postgres
+    ports:
+      - "8080:8080"
+    env_file:
+      - user-service.env
+    container_name: user-service
+
+  user-service-postgres:
+      image: postgres:12.2
+      restart: always
+      environment:
+        POSTGRES_USER: root
+        POSTGRES_PASSWORD: root
+        POSTGRES_DB: ps_main
+      ports:
+        - "5432:5432"
+      container_name: user-service-postgres
+
+  integration-tests:
+    image: golang:1.14
+    environment:
+      APP_BASE_URL: http://user-service:8080
+    command: make go_get go_test_integration
+
+  goose-migrate:
+    build:
+      context: goose
+    command: bash -c 'psql postgres://root:root@user-service-postgres:5432/ps_main -f build/postgres/create_schema.sql &&
+             goose -dir build/postgres/migrations postgres "host=user-service-postgres user=root password=root dbname=ps_main sslmode=disable" up &&
+             psql postgres://root:root@user-service-postgres:5432/ps_main -f build/postgres/insert_testdata.sql'
